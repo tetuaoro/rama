@@ -1,5 +1,5 @@
 use http::status::StatusCode;
-use leptos::*;
+use leptos::prelude::*;
 use thiserror::Error;
 
 #[derive(Clone, Debug, Error)]
@@ -24,7 +24,7 @@ pub fn ErrorTemplate(
     #[prop(optional)] errors: Option<RwSignal<Errors>>,
 ) -> impl IntoView {
     let errors = match outside_errors {
-        Some(e) => create_rw_signal(e),
+        Some(e) => RwSignal::new(e),
         None => match errors {
             Some(e) => e,
             None => panic!("No Errors found and we expected errors!"),
@@ -42,7 +42,7 @@ pub fn ErrorTemplate(
 
     // Only the response code for the first error is actually sent from the server
     // this may be customized by the specific application
-    #[cfg(feature = "ssr")]
+    #[cfg(feature = "server")]
     {
         use leptos_axum::ResponseOptions;
         let response = use_context::<ResponseOptions>();
